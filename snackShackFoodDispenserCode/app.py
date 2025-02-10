@@ -5,6 +5,12 @@ import RPi.GPIO as GPIO
 from routes import start_api
 from dispenser import detect_animal
 from camera import start_stream
+import os
+
+def start_ngrok():
+    """Lance ngrok pour exposer Flask publiquement"""
+    os.system("nohup ngrok http 5000 > /dev/null 2>&1 &")
+    print("ngrok démarré. Vérifie l'URL en exécutant 'ngrok status'.")
 
 def handle_exit(sig, frame):
     print("\nArrêt du programme...")
@@ -14,6 +20,8 @@ def handle_exit(sig, frame):
 signal.signal(signal.SIGINT, handle_exit)
 
 if __name__ == '__main__':
+    start_ngrok()  # Lancer ngrok automatiquement
+    
     # Démarrer Flask et la caméra en parallèle
     flask_thread = threading.Thread(target=start_api)
     camera_thread = threading.Thread(target=start_stream)
