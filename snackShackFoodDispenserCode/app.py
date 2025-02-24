@@ -1,3 +1,5 @@
+#app.py
+
 import threading
 import signal
 import sys
@@ -5,6 +7,7 @@ import RPi.GPIO as GPIO
 from routes import start_api
 from dispenser import detect_animal
 from camera import start_stream
+from sendIP import broadcast_ip
 import os
 
 def start_ngrok():
@@ -25,12 +28,15 @@ if __name__ == '__main__':
     # Démarrer Flask et la caméra en parallèle
     flask_thread = threading.Thread(target=start_api)
     camera_thread = threading.Thread(target=start_stream)
+    sendIP_thread = threading.Thread(target=broadcast_ip)
 
     flask_thread.daemon = True
     camera_thread.daemon = True
+    sendIP_thread.daemon = True
 
     flask_thread.start()
     camera_thread.start()
+    sendIP_thread.start()
 
     # Lancer la détection de mouvement en boucle
     detect_animal()

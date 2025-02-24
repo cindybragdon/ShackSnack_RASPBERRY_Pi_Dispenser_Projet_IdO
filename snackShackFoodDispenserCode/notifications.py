@@ -1,9 +1,10 @@
-import json
+#notifications.py
 import requests
-from config import EXPO_PUSH_TOKEN, EXPO_PUSH_URL
+from config import EXPO_PUSH_URL
+from user_storage import load_users  # Supposé être défini dans user_storage.py
 
 def get_ngrok_url():
-    """Récupère l'URL publique actuelle de ngrok"""
+    """Récupère l'URL publique actuelle de ngrok pour le flux vidéo"""
     try:
         response = requests.get("http://127.0.0.1:4040/api/tunnels")
         ngrok_data = response.json()
@@ -13,17 +14,52 @@ def get_ngrok_url():
         return None
 
 def send_notification(title, message):
+    """Envoie une notification push via Expo."""
+    if title is None or message is None:
+        print("Titre et message sont requis.")
+        return
+
     headers = {"Content-Type": "application/json"}
+    ngrok_url = get_ngrok_url()
+
+    if not ngrok_url:
+        print("Impossible d'envoyer la notification : URL ngrok introuvable.")
+        return
+
+
+
+    users = load_users()
+
+
+    if not users:
+        print("Aucun utilisateur trouvé.")
+        return
+
+    # Récupère le premier utilisateur
+    user_id = list(users.keys())[0]  # Prend la première clé (user_id)
+    push_token = users.get(user_id)
+
+    if not push_token:
+        print(f"Utilisateur {user_id} non trouvé !")
+        return
+
+    deep_link_url = f"snacktest://{user_id}/Feed"
+
     payload = {
-        "to": EXPO_PUSH_TOKEN,
+        "to": push_token,
         "title": title,
         "body": message,
-        "data": {"message": message},
+        "data": {
+            "screen": "{user_id}/Feed",
+            "message": message,
+            "video_url": deep_link_url
+        },
     }
-    print(f"ExponentPushToken :  {EXPO_PUSH_TOKEN}")
-    print(f"Envoi de la notification : {title} - {message}")
+
     try:
         response = requests.post(EXPO_PUSH_URL, headers=headers, json=payload)
-        print("Réponse Expo:", response.json())
+        print(f"Réponse Expo: {response.json()}")
     except Exception as e:
-        print("Erreur lors de l'envoi de la notification:", e)
+        print(f"Erreur lors de l'envoi de la notification: {e}")
+
+

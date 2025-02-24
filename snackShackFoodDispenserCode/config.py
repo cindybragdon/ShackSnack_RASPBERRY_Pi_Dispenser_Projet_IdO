@@ -1,4 +1,4 @@
-EXPO_PUSH_TOKEN = "ExponentPushToken[xQqgY0KNki9YEXuXpp-RQC]"
+EXPO_PUSH_TOKEN = "ExponentPushToken[xyZsF9Nq1Ijh8Q1N8HuWje]"
 EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send"
 
 SERVO_PIN = 17

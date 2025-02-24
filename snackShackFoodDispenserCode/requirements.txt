@@ -5,3 +5,4 @@ gpiozero
 RPI.GPIO
 opencv-python
 requests
+sudo apt install avahi-daemon
