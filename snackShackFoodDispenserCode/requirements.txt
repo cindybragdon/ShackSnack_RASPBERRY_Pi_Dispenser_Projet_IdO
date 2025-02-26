@@ -5,4 +5,6 @@ gpiozero
 RPI.GPIO
 opencv-python
 requests
-sudo apt install avahi-daemon
+picamera2
+lgpio
+avahi-daemon

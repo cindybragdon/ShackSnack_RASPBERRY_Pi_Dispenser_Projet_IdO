@@ -1,0 +1,18 @@
+{
+    "name": "My Dispenser",
+    "mac_adress": "00:1A:2B:3C:4D:5E",
+    "feedingTimes": [
+        {
+            "name": "Morning",
+            "hour": 16,
+            "minute": 3,
+            "days": [
+                {"day": "Monday", "isSelected": true},
+                {"day": "Tuesday", "isSelected": true},
+                {"day": "Wednesday", "isSelected": true}
+            ]
+        }
+    ],
+    "isVacationModeActive": true,
+    "vacationFeedingTime": 2
+}

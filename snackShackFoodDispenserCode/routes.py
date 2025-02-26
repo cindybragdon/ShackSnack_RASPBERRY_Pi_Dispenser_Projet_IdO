@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from dispenser import feed_animal
-from user_storage import add_user  # Utilisation de votre API de stockage existante
+from api import add_user, save_device_settings  # Utilisation de votre API de stockage existante
 import requests
 
 app = Flask(__name__)
@@ -39,6 +39,19 @@ def get_ngrok_url():
         return jsonify({"ngrok_url": public_url})
     except Exception as e:
         return jsonify({"error": "Impossible de récupérer l'URL ngrok", "details": str(e)})
+
+
+# Register a new device settings (replaces existing one)
+@app.route('/device_settings', methods=['POST'])
+def set_device_settings():
+    data = request.get_json()
+
+    if not data.get("name") or not data.get("isVacationModeActive"):
+        return jsonify({"error": "Device name isVacationModeActive are required"}), 400
+
+    save_device_settings(data)
+    return jsonify({"status": "success", "message": "Device settings saved."})
+
 
 def start_api():
     app.run(host="0.0.0.0", port=5000)

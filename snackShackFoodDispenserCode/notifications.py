@@ -1,7 +1,7 @@
 #notifications.py
 import requests
 from config import EXPO_PUSH_URL
-from user_storage import load_users  # Supposé être défini dans user_storage.py
+from api import load_users  # Supposé être défini dans user_storage.py
 
 def get_ngrok_url():
     """Récupère l'URL publique actuelle de ngrok pour le flux vidéo"""
@@ -36,29 +36,39 @@ def send_notification(title, message):
         return
 
     # Récupère le premier utilisateur
-    user_id = list(users.keys())[0]  # Prend la première clé (user_id)
-    push_token = users.get(user_id)
+    #user_id = list(users.keys())[0]  # Prend la première clé (user_id)
+    #push_token = users.get(user_id)
 
-    if not push_token:
-        print(f"Utilisateur {user_id} non trouvé !")
-        return
 
-    deep_link_url = f"snacktest://{user_id}/Feed"
 
-    payload = {
-        "to": push_token,
-        "title": title,
-        "body": message,
-        "data": {
-            "screen": "{user_id}/Feed",
-            "message": message,
-            "video_url": deep_link_url
-        },
-    }
+
 
     try:
-        response = requests.post(EXPO_PUSH_URL, headers=headers, json=payload)
-        print(f"Réponse Expo: {response.json()}")
+        for key, value in users.items():
+            user_id = key
+            push_token = value
+
+            if not push_token:
+                print(f"Utilisateur {user_id} non trouvé !")
+                return
+            
+
+            deep_link_url = f"snacktest://{user_id}/Feed"
+
+            payload = {
+                "to": push_token,
+                "title": title,
+                "body": message,
+                "data": {
+                    "screen": "{user_id}/Feed",
+                    "message": message,
+                    "video_ur)l": deep_link_url
+                },
+            }
+
+
+            response = requests.post(EXPO_PUSH_URL, headers=headers, json=payload)
+            print(f"Réponse Expo: {response.json()}")
     except Exception as e:
         print(f"Erreur lors de l'envoi de la notification: {e}")
 

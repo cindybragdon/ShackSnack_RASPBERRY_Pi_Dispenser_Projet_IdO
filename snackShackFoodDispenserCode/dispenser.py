@@ -26,7 +26,7 @@ def feed_animal(duration=1):
     send_notification("Distributeur activé", f"L'animal a été nourri pendant {duration} secondes.")
 
 def detect_animal():
-    tempsRestantAttente = 300
+    tempsRestantAttente = 100
     while True:
         pir.wait_for_motion()
         print("🕺   Mouvement détecté...")

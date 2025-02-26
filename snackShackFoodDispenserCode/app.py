@@ -8,6 +8,7 @@ from routes import start_api
 from dispenser import detect_animal
 from camera import start_stream
 from sendIP import broadcast_ip
+from vacancyMode import vacation_mode_thread
 import os
 
 def start_ngrok():
@@ -29,14 +30,17 @@ if __name__ == '__main__':
     flask_thread = threading.Thread(target=start_api)
     camera_thread = threading.Thread(target=start_stream)
     sendIP_thread = threading.Thread(target=broadcast_ip)
+    vacancyMode_thread = threading.Thread(target=vacation_mode_thread)
 
     flask_thread.daemon = True
     camera_thread.daemon = True
     sendIP_thread.daemon = True
+    vacancyMode_thread.daemon = True
 
     flask_thread.start()
     camera_thread.start()
     sendIP_thread.start()
+    vacancyMode_thread.start()
 
     # Lancer la détection de mouvement en boucle
     detect_animal()
